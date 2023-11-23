@@ -32,10 +32,79 @@ const chilli = document.querySelector(".chilli");
 chilli.innerHTML = 0;
 const peas = document.querySelector(".peas");
 peas.innerHTML = 0;
+
+// Recipe names and ingredients
+const recipes = [
+  {
+    name: "Spicy peas",
+    ingredients: ["🌶️", "🫛", "🫛", "🌶️", "🫛"],
+  },
+  {
+    name: "Vampire delight",
+    ingredients: ["🧄", "🥕", "🥬", "🧄", "🧄", "🧅"],
+  },
+  {
+    name: "Veggie assorti",
+    ingredients: ["🍆", "🍅", "🫑", "🥦", "🥔", "🥬"],
+  },
+];
 //
 
 gsap.set(".follower", { filter: "drop-shadow(30px 30px 4px rgba(0,0,0,0.1))" });
 gsap.set(".dagger", { rotate: 125, xPercent: -50, yPercent: -55 });
+
+//added by me
+let recipeToMake = {};
+let ingredients = document.querySelector(".recipeVegetablesWrapper");
+
+function showRecipe() {
+  let recipeIndex = Math.floor(Math.random() * 3);
+  recipeToMake = recipes[recipeIndex];
+  document.querySelector(".recipeName").innerHTML = recipeToMake.name;
+  console.log(recipeToMake);
+  ingredients.innerHTML = recipeToMake.ingredients
+    .map((item) => {
+      return `<span class=""> ${item} </span>`;
+    })
+    .join("");
+}
+
+document.onload = showRecipe();
+
+let slicedVeggies = [];
+let gameEndText = document.querySelector(".gameEnd");
+
+function checkRecipe() {
+  let recipeIngredients = recipeToMake.ingredients;
+  let ingredientsMatch = false;
+  for (let i = 0; i < slicedVeggies.length; i++) {
+    if (slicedVeggies[i] === recipeIngredients[i]) {
+      ingredientsMatch = true;
+
+      if (slicedVeggies.length === recipeIngredients.length) {
+        gameEndText.innerHTML = "YOU WON";
+        gameEnd();
+      }
+    } else {
+      ingredientsMatch = false;
+      gameEndText.innerHTML = "YOU LOOSE";
+      gameEnd();
+    }
+  }
+  if (ingredientsMatch) {
+    ingredients.firstChild.remove();
+  }
+}
+
+function stopGame() {
+  window.onpointerdown = null;
+  window.onpointerup = null;
+  window.onpointermove = null;
+  vegTL.pause();
+  slicedVeggies = []; // Clear sliced veggies
+}
+
+//
 
 window.onpointerdown = (e) => {
   gsap
@@ -81,39 +150,43 @@ window.onpointerdown = (e) => {
           score.innerHTML =
             "Sliced " + pts + '<span class="num"> / ' + vegNum + "</span>";
           // added by me
-          if (item.innerHTML == "🫑") {
-            paprika.innerHTML = parseInt(paprika.innerHTML) + 1;
+          slicedVeggies.push(item.innerHTML);
+          switch (item.innerHTML) {
+            case "🫑":
+              paprika.innerHTML = parseInt(paprika.innerHTML) + 1;
+              break;
+            case "🍅":
+              tomato.innerHTML = parseInt(tomato.innerHTML) + 1;
+              break;
+            case "🥕":
+              carrot.innerHTML = parseInt(carrot.innerHTML) + 1;
+              break;
+            case "🍆":
+              eggplant.innerHTML = parseInt(eggplant.innerHTML) + 1;
+              break;
+            case "🥬":
+              salad.innerHTML = parseInt(salad.innerHTML) + 1;
+              break;
+            case "🥔":
+              potato.innerHTML = parseInt(potato.innerHTML) + 1;
+              break;
+            case "🥦":
+              broccoli.innerHTML = parseInt(broccoli.innerHTML) + 1;
+              break;
+            case "🧅":
+              onion.innerHTML = parseInt(onion.innerHTML) + 1;
+              break;
+            case "🧄":
+              garlic.innerHTML = parseInt(garlic.innerHTML) + 1;
+              break;
+            case "🌶️":
+              chilli.innerHTML = parseInt(chilli.innerHTML) + 1;
+              break;
+            case "🫛":
+              peas.innerHTML = parseInt(peas.innerHTML) + 1;
+              break;
           }
-          if (item.innerHTML == "🍅") {
-            tomato.innerHTML = parseInt(tomato.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🥕") {
-            carrot.innerHTML = parseInt(carrot.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🍆") {
-            eggplant.innerHTML = parseInt(eggplant.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🥬") {
-            salad.innerHTML = parseInt(salad.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🥔") {
-            potato.innerHTML = parseInt(potato.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🥦") {
-            broccoli.innerHTML = parseInt(broccoli.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🧅") {
-            onion.innerHTML = parseInt(onion.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🧄") {
-            garlic.innerHTML = parseInt(garlic.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🌶️") {
-            chilli.innerHTML = parseInt(chilli.innerHTML) + 1;
-          }
-          if (item.innerHTML == "🫛") {
-            peas.innerHTML = parseInt(peas.innerHTML) + 1;
-          }
+          checkRecipe();
           //
           stageFg.append(item);
           gsap
@@ -207,7 +280,7 @@ function addveg() {
   );
 }
 
-const vegTL = gsap.to(window, { duration: 1, repeat: 50, onRepeat: addveg });
+const vegTL = gsap.to(window, { duration: 1, repeat: 120, onRepeat: addveg });
 
 const timerTL = gsap
   .timeline({ onComplete: gameEnd })
@@ -241,6 +314,7 @@ function gameEnd() {
     vegTL.play(0);
     timerTL.play(0);
     resetVegCount();
+    gameEndText.innerHTML = null;
   };
 
   // Added by me
