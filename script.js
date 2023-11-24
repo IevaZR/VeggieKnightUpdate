@@ -11,30 +11,29 @@ let timeScale = 1;
 
 //ADDED BY ME
 
-document.onload = addVeggieCount()
+document.onload = addVeggieCount();
 
 function addVeggieCount() {
-  let parentDiv = document.querySelector(".sliced")
-  for (let i = 0; i<veg.length; i++) {
-    let childDiv = `<div class="slicedItem"><span>${veg[i]}</span><p class="vegNo${i}"></p></div>`
-    parentDiv.insertAdjacentHTML('beforeend', childDiv);
-    document.querySelector(`.vegNo${i}`).innerHTML = 0
+  let parentDiv = document.querySelector(".sliced");
+  for (let i = 0; i < veg.length; i++) {
+    let childDiv = `<div class="slicedItem"><span>${veg[i]}</span><p class="vegNo${i}"></p></div>`;
+    parentDiv.insertAdjacentHTML("beforeend", childDiv);
+    document.querySelector(`.vegNo${i}`).innerHTML = 0;
   }
-  return parentDiv
+  return parentDiv;
 }
-
 
 // Recipe names and ingredients
 let vegObjectArr = () => {
-  let newVegArr = []
-  for (let i=0; i<=veg.length; i++) {
-    let count = 1
-    let obj = {}
+  let newVegArr = [];
+  for (let i = 0; i <= veg.length; i++) {
+    let count = 1;
+    let obj = {};
     obj[veg[i]] = count;
-    newVegArr.push(obj)
-    count++
+    newVegArr.push(obj);
+    count++;
   }
-  console.log(newVegArr)
+  console.log(newVegArr);
 };
 const recipes = [
   {
@@ -151,12 +150,17 @@ window.onpointerdown = (e) => {
           score.innerHTML =
             "Sliced " + pts + '<span class="num"> / ' + vegNum + "</span>";
           // added by me
-          slicedVeggies.push(item.innerHTML);
-          vegObjectArr()
+          if (item.innerHTML !== "⏱️") {
+            slicedVeggies.push(item.innerHTML);
+          }
 
-          let itemIndex = veg.indexOf(item.innerHTML)
-          document.querySelector(`.vegNo${itemIndex}`).innerHTML = parseInt(document.querySelector(`.vegNo${itemIndex}`).innerHTML) + 1
-          
+          vegObjectArr();
+
+          let itemIndex = veg.indexOf(item.innerHTML);
+          document.querySelector(`.vegNo${itemIndex}`).innerHTML =
+            parseInt(document.querySelector(`.vegNo${itemIndex}`).innerHTML) +
+            1;
+
           checkRecipe();
           //
           stageFg.append(item);
