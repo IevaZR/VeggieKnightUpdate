@@ -10,30 +10,32 @@ let pts = 0;
 let timeScale = 1;
 
 //ADDED BY ME
-const paprika = document.querySelector(".paprika");
-paprika.innerHTML = 0;
-const tomato = document.querySelector(".tomato");
-tomato.innerHTML = 0;
-const carrot = document.querySelector(".carrot");
-carrot.innerHTML = 0;
-const eggplant = document.querySelector(".eggplant");
-eggplant.innerHTML = 0;
-const salad = document.querySelector(".salad");
-salad.innerHTML = 0;
-const potato = document.querySelector(".potato");
-potato.innerHTML = 0;
-const broccoli = document.querySelector(".broccoli");
-broccoli.innerHTML = 0;
-const onion = document.querySelector(".onion");
-onion.innerHTML = 0;
-const garlic = document.querySelector(".garlic");
-garlic.innerHTML = 0;
-const chilli = document.querySelector(".chilli");
-chilli.innerHTML = 0;
-const peas = document.querySelector(".peas");
-peas.innerHTML = 0;
+
+document.onload = addVeggieCount()
+
+function addVeggieCount() {
+  let parentDiv = document.querySelector(".sliced")
+  for (let i = 0; i<veg.length; i++) {
+    let childDiv = `<div class="slicedItem"><span>${veg[i]}</span><p class="vegNo${i}"></p></div>`
+    parentDiv.insertAdjacentHTML('beforeend', childDiv);
+    document.querySelector(`.vegNo${i}`).innerHTML = 0
+  }
+  return parentDiv
+}
+
 
 // Recipe names and ingredients
+let vegObjectArr = () => {
+  let newVegArr = []
+  for (let i=0; i<=veg.length; i++) {
+    let count = 1
+    let obj = {}
+    obj[veg[i]] = count;
+    newVegArr.push(obj)
+    count++
+  }
+  console.log(newVegArr)
+};
 const recipes = [
   {
     name: "Spicy peas",
@@ -61,7 +63,6 @@ function showRecipe() {
   let recipeIndex = Math.floor(Math.random() * 3);
   recipeToMake = recipes[recipeIndex];
   document.querySelector(".recipeName").innerHTML = recipeToMake.name;
-  console.log(recipeToMake);
   ingredients.innerHTML = recipeToMake.ingredients
     .map((item) => {
       return `<span class=""> ${item} </span>`;
@@ -151,41 +152,11 @@ window.onpointerdown = (e) => {
             "Sliced " + pts + '<span class="num"> / ' + vegNum + "</span>";
           // added by me
           slicedVeggies.push(item.innerHTML);
-          switch (item.innerHTML) {
-            case "🫑":
-              paprika.innerHTML = parseInt(paprika.innerHTML) + 1;
-              break;
-            case "🍅":
-              tomato.innerHTML = parseInt(tomato.innerHTML) + 1;
-              break;
-            case "🥕":
-              carrot.innerHTML = parseInt(carrot.innerHTML) + 1;
-              break;
-            case "🍆":
-              eggplant.innerHTML = parseInt(eggplant.innerHTML) + 1;
-              break;
-            case "🥬":
-              salad.innerHTML = parseInt(salad.innerHTML) + 1;
-              break;
-            case "🥔":
-              potato.innerHTML = parseInt(potato.innerHTML) + 1;
-              break;
-            case "🥦":
-              broccoli.innerHTML = parseInt(broccoli.innerHTML) + 1;
-              break;
-            case "🧅":
-              onion.innerHTML = parseInt(onion.innerHTML) + 1;
-              break;
-            case "🧄":
-              garlic.innerHTML = parseInt(garlic.innerHTML) + 1;
-              break;
-            case "🌶️":
-              chilli.innerHTML = parseInt(chilli.innerHTML) + 1;
-              break;
-            case "🫛":
-              peas.innerHTML = parseInt(peas.innerHTML) + 1;
-              break;
-          }
+          vegObjectArr()
+
+          let itemIndex = veg.indexOf(item.innerHTML)
+          document.querySelector(`.vegNo${itemIndex}`).innerHTML = parseInt(document.querySelector(`.vegNo${itemIndex}`).innerHTML) + 1
+          
           checkRecipe();
           //
           stageFg.append(item);
